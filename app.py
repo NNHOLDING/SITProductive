@@ -66,7 +66,10 @@ with st.form("formulario_registro"):
             ]
             sheet.append_row(fila)
             st.success(f"✅ Registro #{id_registro} enviado correctamente.")
-            st.experimental_rerun()
+
+            # Reiniciar para limpiar campos
+            st.rerun()
+
         except Exception as e:
             st.error("❌ Error al guardar el registro.")
             st.error(f"Detalles: {e}")
