@@ -3,12 +3,10 @@ from datetime import date, datetime
 import gspread
 from google.oauth2.service_account import Credentials
 
-# Configuración inicial de la página
 st.set_page_config(page_title="Alisto Unimar", layout="centered")
 st.title("Formulario - Alisto Unimar")
 st.markdown("Por favor completa los siguientes datos:")
 
-# Lista de placas
 placas = [
     "200", "201", "202", "203", "204", "205", "206", "207", "208", "209",
     "210", "211", "212", "213", "214", "215", "216", "216", "218",
@@ -22,16 +20,13 @@ placas = [
     "DEMASA", "INOLASA", "EXPORTACION UNIMAR", "HILLTOP", "SAM", "CARTAINESA", "AUTODELI", "WALMART", "PRICSMART"
 ]
 
-# Lista de usuarios
 usuarios = [
     "51416", "51417", "59907", "51918", "58898", "59116", "52106",
     "54933", "51857", "53990", "52190", "52182", "00000", "11111"
 ]
 
-# ID de hoja
 GOOGLE_SHEET_ID = "1o-GozoYaU_4Ra2KgX05Yi4biDV9zcd6BGdqOdSxKAv0"
 
-# Autenticación con Google Sheets
 try:
     scope = [
         "https://spreadsheets.google.com/feeds",
@@ -41,12 +36,10 @@ try:
     credentials = Credentials.from_service_account_info(service_account_info, scopes=scope)
     gc = gspread.authorize(credentials)
     sheet = gc.open_by_key(GOOGLE_SHEET_ID).sheet1
-
 except Exception as e:
     st.error("❌ Error al configurar la autenticación de Google Sheets.")
     st.stop()
 
-# --- Formulario ---
 with st.form("formulario_registro"):
     fecha = st.date_input("Fecha de operación", value=date.today())
     placa = st.selectbox("Placa", placas)
@@ -58,9 +51,8 @@ with st.form("formulario_registro"):
 
     if enviado:
         try:
-            # Campos ocultos generados automáticamente
             fecha_registro = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            id_registro = len(sheet.get_all_values()) + 1  # Consecutivo por número de filas
+            id_registro = len(sheet.get_all_values()) + 1
 
             fila = [
                 id_registro,
@@ -74,7 +66,7 @@ with st.form("formulario_registro"):
             ]
             sheet.append_row(fila)
             st.success(f"✅ Registro #{id_registro} enviado correctamente.")
-
+            st.experimental_rerun()
         except Exception as e:
             st.error("❌ Error al guardar el registro.")
             st.error(f"Detalles: {e}")
